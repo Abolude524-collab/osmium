@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7-jammy
+    container_name: osmium-mongodb
+    restart: always
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo-data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: osmium
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: osmium-backend
+    restart: always
+    ports:
+      - '5000:5000'
+    depends_on:
+      - mongodb
+    environment:
+      PORT: 5000
+      NODE_ENV: production
+      MONGODB_URI: mongodb://mongodb:27017/osmium
+      JWT_SECRET: 4f8a9e2d7b1c3f5a6e8d0b2c4a1f3e5d7b9c0a2f4e6d8b1c3a5f7e9d0b2c4a1f
+      JWT_EXPIRES_IN: 7d
+      CLIENT_URL: http://localhost:3000
+      PAYSTACK_SECRET_KEY: ${PAYSTACK_SECRET_KEY}
+      NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY: ${NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY}
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: osmium-frontend
+    restart: always
+    ports:
+      - '3000:3000'
+    depends_on:
+      - backend
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:5000/api
+      NEXT_PUBLIC_CLIENT_URL: http://localhost:3000
+      NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY: ${NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY}
+
+volumes:
+  mongo-data:
