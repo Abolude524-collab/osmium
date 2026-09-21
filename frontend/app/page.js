@@ -11,6 +11,8 @@ import { Modal } from '@/components/ui/Modal';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { Toast } from '@/components/ui/Toast';
 import { useCartStore } from '@/store/cartStore';
+import { HeaderSearch } from '@/components/search/HeaderSearch';
+import { formatCurrency } from '@/lib/utils';
 import { 
   ArrowRight, 
   Smartphone, 
@@ -180,7 +182,11 @@ export default function HomePage() {
             Discover technology, fashion, essentials, and everyday objects selected with intent.
           </p>
 
-          <div className="flex flex-wrap items-center gap-4 pt-2">
+          <div className="w-full max-w-lg my-1">
+            <HeaderSearch />
+          </div>
+
+          <div className="flex flex-wrap items-center gap-4 pt-1">
             <Link href="/products">
               <Button size="lg" icon={ArrowRight}>
                 EXPLORE CATALOG
@@ -273,7 +279,7 @@ export default function HomePage() {
               </CardContent>
 
               <CardFooter>
-                <span className="text-lg font-bold font-mono text-primary">${product.price}.00</span>
+                <span className="text-lg font-bold font-mono text-primary">{formatCurrency(product.price)}</span>
                 <Button 
                   variant="secondary" 
                   size="sm" 

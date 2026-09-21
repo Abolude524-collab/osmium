@@ -209,7 +209,7 @@ function ProductsContent() {
 
           {/* Price Filter */}
           <div className="flex flex-col gap-3 pt-4 border-t border-border/50">
-            <span className="text-[11px] font-mono text-secondary uppercase">PRICE RANGE ($)</span>
+            <span className="text-[11px] font-mono text-secondary uppercase">PRICE RANGE (₦)</span>
             <div className="flex items-center gap-2">
               <Input
                 placeholder="Min"
@@ -398,7 +398,7 @@ function ProductsContent() {
           </div>
 
           <div className="flex flex-col gap-3 pt-4 border-t border-border">
-            <span className="text-xs font-mono text-secondary uppercase">PRICE RANGE ($)</span>
+            <span className="text-xs font-mono text-secondary uppercase">PRICE RANGE (₦)</span>
             <div className="flex items-center gap-2">
               <Input placeholder="Min" type="number" value={minPriceInput} onChange={(e) => setMinPriceInput(e.target.value)} />
               <span>-</span>

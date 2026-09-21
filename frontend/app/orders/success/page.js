@@ -110,7 +110,7 @@ function OrderSuccessContent() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 rounded bg-obsidian border border-border text-xs font-mono">
             <div className="flex flex-col gap-1">
               <span className="text-secondary/70">PAYSTACK REFERENCE</span>
-              <span className="text-cyan font-bold truncate">{order.paymentInfo?.stripePaymentIntentId || reference}</span>
+              <span className="text-cyan font-bold truncate">{order.paymentInfo?.paystackReference || order.paymentInfo?.stripePaymentIntentId || reference}</span>
             </div>
             <div className="flex flex-col gap-1">
               <span className="text-secondary/70">DATE & TIME</span>

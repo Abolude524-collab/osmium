@@ -52,7 +52,12 @@ const orderSchema = new mongoose.Schema<IOrderDocument>(
       },
       method: {
         type: String,
-        default: 'stripe',
+        default: 'paystack',
+      },
+      paystackReference: {
+        type: String,
+        default: '',
+        index: true,
       },
       stripePaymentIntentId: {
         type: String,

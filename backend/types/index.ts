@@ -81,6 +81,7 @@ export interface IShippingAddress {
 export interface IPaymentInfo {
   status: PaymentStatus;
   method: string;
+  paystackReference?: string;
   stripePaymentIntentId?: string; // Stores Paystack reference string
   paidAt?: Date;
 }

@@ -50,8 +50,55 @@ export const getProductReviews = async (req: Request, res: Response, next: NextF
 };
 
 /**
+ * @route   GET /api/products/:productId/reviews/eligibility
+ * @desc    Check if authenticated user can review product (must have paid order)
+ * @access  Private / Protected
+ */
+export const checkReviewEligibility = async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const { productId } = req.params;
+    const userId = req.user!._id;
+
+    // 1. Check if user has already reviewed this product
+    const existingReview = await Review.findOne({ user: userId, product: productId });
+    if (existingReview) {
+      return res.status(200).json({
+        status: 'success',
+        canReview: false,
+        reason: 'already_reviewed',
+        message: 'You have already submitted a review for this product.',
+      });
+    }
+
+    // 2. Check purchase history for Paid order containing product
+    const verifiedOrder = await Order.findOne({
+      user: userId,
+      'paymentInfo.status': 'paid',
+      'orderItems.product': productId,
+    });
+
+    if (!verifiedOrder) {
+      return res.status(200).json({
+        status: 'success',
+        canReview: false,
+        reason: 'not_purchased',
+        message: 'Only customers who have successfully purchased this product can leave a review.',
+      });
+    }
+
+    res.status(200).json({
+      status: 'success',
+      canReview: true,
+      message: 'Verified purchaser eligible to review.',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
  * @route   POST /api/products/:productId/reviews
- * @desc    Create product review & verify purchase history
+ * @desc    Create product review strictly for verified purchasers
  * @access  Private / Protected
  */
 export const createProductReview = async (req: AuthRequest, res: Response, next: NextFunction) => {
@@ -83,14 +130,17 @@ export const createProductReview = async (req: AuthRequest, res: Response, next:
       return next(new Error('You have already submitted a review for this product'));
     }
 
-    // Check purchase history for Verified Purchaser status
+    // Strictly enforce purchase history requirement
     const verifiedOrder = await Order.findOne({
       user: userId,
       'paymentInfo.status': 'paid',
       'orderItems.product': productId,
     });
 
-    const isVerifiedPurchase = Boolean(verifiedOrder);
+    if (!verifiedOrder) {
+      res.status(403);
+      return next(new Error('Only customers who have successfully purchased this product can leave a review.'));
+    }
 
     const review = await Review.create({
       user: userId,
@@ -98,7 +148,7 @@ export const createProductReview = async (req: AuthRequest, res: Response, next:
       rating: Number(rating),
       title: title ? title.trim() : '',
       comment: comment.trim(),
-      isVerifiedPurchase,
+      isVerifiedPurchase: true,
     });
 
     res.status(201).json({

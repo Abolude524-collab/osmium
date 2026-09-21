@@ -32,7 +32,7 @@ It should demonstrate practical knowledge of:
 - Pagination
 - Shopping carts
 - Checkout
-- Stripe payments
+- Paystack payments
 - Order management
 - User profiles
 - Admin dashboards
@@ -110,7 +110,7 @@ The platform must also provide administrative tools for managing the product and
 4. Persist data using MongoDB.
 5. Implement secure authentication.
 6. Use Zustand for appropriate client-side state.
-7. Integrate Stripe for payments.
+7. Integrate Paystack for payments.
 8. Build customer order history.
 9. Build an administrative dashboard.
 10. Implement robust search/filter/sort functionality.
@@ -245,7 +245,7 @@ and securely pay for my order.
 
 ### Payment
 
-I want to pay through Stripe without OSMIUM storing sensitive card information.
+I want to pay through Paystack without OSMIUM storing sensitive card information.
 
 ### Orders
 
@@ -440,7 +440,7 @@ Order Review
  ↓
 Create Payment Session
  ↓
-Stripe Checkout
+Paystack Inline Checkout
  ↓
 Payment Confirmation
  ↓
@@ -453,20 +453,20 @@ Success Page
 
 The application must not mark an order as paid merely because the browser redirected to a success page.
 
-Stripe webhooks must be treated as the authoritative payment confirmation mechanism.
+Paystack webhooks must be treated as the authoritative payment confirmation mechanism.
 
 ---
 
-# 15. Stripe Integration
+# 15. Paystack Integration
 
-Stripe must handle payment processing.
+Paystack must handle payment processing.
 
 The application should:
 
-1. Create a checkout session on the server.
-2. Pass validated product information to Stripe.
-3. Redirect the customer to Stripe Checkout.
-4. Receive Stripe webhook events.
+1. Create a checkout transaction on the server.
+2. Pass validated product information to Paystack.
+3. Redirect or trigger Paystack Inline Checkout.
+4. Receive Paystack webhook events.
 5. Verify webhook signatures.
 6. Update the order/payment state.
 7. Display the appropriate success/failure state.
@@ -498,8 +498,8 @@ Order
 ├── paymentStatus
 ├── fulfillmentStatus
 ├── shippingAddress
-├── stripeSessionId
-├── stripePaymentIntentId
+├── paystackReference
+├── paystackTransactionId
 ├── createdAt
 └── updatedAt
 ```
@@ -906,7 +906,7 @@ Implement:
 - Rate limiting where appropriate
 - CORS configuration
 - Environment variables
-- Stripe webhook signature verification
+- Paystack webhook signature verification
 - Server-side price validation
 - Protection against injection
 - Protection against insecure direct object references
@@ -916,8 +916,8 @@ Never expose:
 ```text
 DATABASE_URL
 JWT_SECRET
-STRIPE_SECRET_KEY
-STRIPE_WEBHOOK_SECRET
+PAYSTACK_SECRET_KEY
+PAYSTACK_WEBHOOK_SECRET
 ```
 
 to the client.
@@ -931,9 +931,9 @@ Example:
 ```text
 MONGODB_URI=
 JWT_SECRET=
-STRIPE_SECRET_KEY=
-STRIPE_WEBHOOK_SECRET=
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=
+PAYSTACK_SECRET_KEY=
+PAYSTACK_WEBHOOK_SECRET=
+NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY=
 NEXT_PUBLIC_API_URL=
 ```
 
@@ -1078,7 +1078,7 @@ Examples:
 feat: add product catalog
 feat: implement authentication
 feat: add cart store
-feat: integrate stripe checkout
+feat: integrate paystack checkout
 fix: prevent duplicate order creation
 refactor: separate product service
 test: add cart calculation tests
@@ -1143,11 +1143,11 @@ working
 - Checkout form
 - Address
 - Order validation
-- Stripe session
+- Paystack session
 
 ## Phase 7 — Payments
 
-- Stripe
+- Paystack
 - Webhooks
 - Payment status
 - Failure handling
@@ -1181,7 +1181,7 @@ working
 - Frontend deployment
 - Backend deployment
 - MongoDB production database
-- Stripe production configuration
+- Paystack production configuration
 - Environment variables
 - Monitoring
 
@@ -1201,8 +1201,8 @@ OSMIUM is considered complete when:
 - Cart works.
 - Cart persists appropriately.
 - Checkout works.
-- Stripe payment works.
-- Stripe webhook confirmation works.
+- Paystack payment works.
+- Paystack webhook confirmation works.
 - Orders are persisted.
 - Users can view order history.
 - Admins can manage products.

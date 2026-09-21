@@ -195,7 +195,7 @@ export default function MyOrdersPage() {
 
                 {/* Right Action CTA */}
                 <div className="flex items-center gap-3 self-end md:self-center shrink-0">
-                  <Link href={`/orders/success?reference=${order.paymentInfo?.stripePaymentIntentId}`}>
+                  <Link href={`/orders/success?reference=${order.paymentInfo?.paystackReference || order.paymentInfo?.stripePaymentIntentId}`}>
                     <Button variant="outline" size="sm" icon={ChevronRight}>
                       VIEW RECEIPT
                     </Button>

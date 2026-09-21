@@ -11,13 +11,13 @@ export function cn(...inputs) {
 }
 
 /**
- * Formats a raw number value into USD currency format ($XX.XX)
+ * Formats a raw number value into NGN Naira currency format (₦XX,XXX.XX)
  * @param {number} amount 
  * @returns {string} Formatted currency string
  */
 export function formatCurrency(amount) {
-  return new Intl.NumberFormat('en-US', {
+  return new Intl.NumberFormat('en-NG', {
     style: 'currency',
-    currency: 'USD',
+    currency: 'NGN',
   }).format(amount || 0);
 }

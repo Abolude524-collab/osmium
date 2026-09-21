@@ -697,13 +697,13 @@ The payment interface should clearly communicate:
 ```text
 SECURE CHECKOUT
 
-Your payment is securely processed by Stripe.
+Your payment is securely processed by Paystack.
 OSMIUM does not store your card details.
 
 [ PAY $329.00 ]
 ```
 
-Never create a fake payment form for production use if Stripe Checkout/Elements is being used.
+Never create a fake payment form for production use if Paystack Inline Checkout is being used.
 
 ---
 

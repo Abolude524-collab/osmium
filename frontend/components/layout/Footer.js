@@ -69,7 +69,7 @@ export const Footer = () => {
         <div className="pt-8 border-t border-border/50 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-secondary/60">
           <p>© {new Date().getFullYear()} OSMIUM INC. ALL RIGHTS RESERVED.</p>
           <div className="flex items-center gap-4">
-            <span>SECURE CHECKOUT BY STRIPE</span>
+            <span>SECURE CHECKOUT BY PAYSTACK</span>
           </div>
         </div>
       </div>

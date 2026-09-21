@@ -192,6 +192,7 @@ export const initializePaystackCheckout = async (req: AuthRequest, res: Response
       paymentInfo: {
         status: 'pending',
         method: 'paystack',
+        paystackReference: reference,
         stripePaymentIntentId: reference,
       },
       fulfillmentStatus: 'pending',
@@ -236,7 +237,9 @@ export const handlePaystackWebhook = async (req: Request, res: Response) => {
 
     if (event.event === 'charge.success') {
       const reference = event.data.reference;
-      const order = await Order.findOne({ 'paymentInfo.stripePaymentIntentId': reference });
+      const order = await Order.findOne({
+        $or: [{ 'paymentInfo.paystackReference': reference }, { 'paymentInfo.stripePaymentIntentId': reference }],
+      });
 
       if (order) {
         if (order.paymentInfo.status === 'paid') {
@@ -271,7 +274,9 @@ export const verifyPaystackTransaction = async (req: Request, res: Response, nex
     const { reference } = req.params;
     const isMock = req.query.mock === 'true';
 
-    const order = await Order.findOne({ 'paymentInfo.stripePaymentIntentId': reference }).populate('user', 'name email');
+    const order = await Order.findOne({
+      $or: [{ 'paymentInfo.paystackReference': reference }, { 'paymentInfo.stripePaymentIntentId': reference }],
+    }).populate('user', 'name email');
 
     if (!order) {
       res.status(404);

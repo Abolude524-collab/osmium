@@ -2,16 +2,15 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Search, ShoppingBag, User, Menu, LogOut, Shield, Heart } from 'lucide-react';
+import { ShoppingBag, User, Menu, LogOut, Shield, Heart } from 'lucide-react';
 import { Drawer } from '@/components/ui/Drawer';
-import { SearchModal } from '@/components/search/SearchModal';
+import { HeaderSearch } from '@/components/search/HeaderSearch';
 import { useAuthStore } from '@/store/authStore';
 import { useCartStore } from '@/store/cartStore';
 import { useWishlistStore } from '@/store/useWishlistStore';
 
 export const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   const { user, logout, fetchProfile } = useAuthStore();
@@ -23,18 +22,6 @@ export const Header = () => {
     fetchProfile();
   }, [fetchProfile]);
 
-  // Global ⌘K / Ctrl+K keyboard shortcut listener
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
-        e.preventDefault();
-        setIsSearchModalOpen((prev) => !prev);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
   const navLinks = [
     { label: 'Shop', href: '/products' },
     { label: 'Categories', href: '/categories' },
@@ -44,14 +31,14 @@ export const Header = () => {
 
   return (
     <>
-      <header className="sticky top-0 z-40 bg-obsidian/90 backdrop-blur-md border-b border-border transition-all">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+      <header className="sticky top-0 z-40 bg-obsidian/95 backdrop-blur-md border-b border-border transition-all">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3 sm:gap-6">
           
           {/* Mobile Menu Trigger & Brand Logo */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 shrink-0">
             <button
               onClick={() => setIsMobileMenuOpen(true)}
-              className="md:hidden text-secondary hover:text-cyan p-1.5 rounded-md hover:bg-elevated transition-colors"
+              className="lg:hidden text-secondary hover:text-cyan p-1.5 rounded-md hover:bg-elevated transition-colors"
               aria-label="Open menu"
             >
               <Menu className="w-5 h-5" />
@@ -68,38 +55,31 @@ export const Header = () => {
           </div>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="hidden lg:flex items-center gap-6">
             {navLinks.map((link) => (
               <Link
                 key={link.label}
                 href={link.href}
-                className="text-xs font-medium tracking-wider text-secondary hover:text-cyan uppercase transition-colors"
+                className="text-xs font-medium tracking-wider text-secondary hover:text-cyan uppercase transition-colors shrink-0"
               >
                 {link.label}
               </Link>
             ))}
           </nav>
 
-          {/* Header Actions */}
-          <div className="flex items-center gap-2 sm:gap-3">
-            {/* Quick Search Button */}
-            <button
-              className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-graphite border border-border text-secondary hover:text-primary hover:border-cyan/40 text-xs font-mono transition-all"
-              onClick={() => setIsSearchModalOpen(true)}
-            >
-              <Search className="w-3.5 h-3.5 text-cyan" />
-              <span className="hidden sm:inline">SEARCH</span>
-              <kbd className="hidden lg:inline-block bg-elevated px-1.5 py-0.5 text-[10px] text-secondary rounded border border-border">
-                ⌘K
-              </kbd>
-            </button>
+          {/* Integrated Desktop & Tablet In-Page Search Bar */}
+          <div className="hidden sm:flex flex-1 max-w-xs md:max-w-sm lg:max-w-md mx-2">
+            <HeaderSearch />
+          </div>
 
+          {/* Header Actions */}
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             {/* Account Action */}
             {mounted && user ? (
               <div className="flex items-center gap-2">
                 <Link
                   href={user.role === 'admin' ? '/admin' : '/orders'}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-graphite border border-border text-xs font-mono text-primary hover:border-cyan/40 transition-colors"
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-graphite border border-border text-xs font-mono text-primary hover:border-cyan/40 transition-colors"
                   title={user.role === 'admin' ? 'Admin Dashboard' : 'My Orders'}
                 >
                   {user.role === 'admin' ? (
@@ -107,7 +87,7 @@ export const Header = () => {
                   ) : (
                     <User className="w-3.5 h-3.5 text-cyan shrink-0" />
                   )}
-                  <span className="max-w-[100px] truncate">{user.name.split(' ')[0]}</span>
+                  <span className="hidden md:inline max-w-[90px] truncate">{user.name.split(' ')[0]}</span>
                 </Link>
                 <button
                   onClick={logout}
@@ -155,6 +135,11 @@ export const Header = () => {
               )}
             </button>
           </div>
+        </div>
+
+        {/* Dedicated Mobile Inline Search Row (Visible on small screens < sm) */}
+        <div className="sm:hidden px-4 pb-3 pt-1 border-t border-border/40 bg-obsidian">
+          <HeaderSearch />
         </div>
 
         {/* Mobile Menu Drawer */}
@@ -234,12 +219,6 @@ export const Header = () => {
           </div>
         </Drawer>
       </header>
-
-      {/* Global Search Modal */}
-      <SearchModal
-        isOpen={isSearchModalOpen}
-        onClose={() => setIsSearchModalOpen(false)}
-      />
     </>
   );
 };

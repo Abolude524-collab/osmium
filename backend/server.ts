@@ -21,10 +21,10 @@ import uploadRoutes from './routes/upload.js';
 import { notFoundHandler } from './middleware/notFoundHandler.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
-dotenv.config({ path: path.resolve(process.cwd(), '../.env.local') });
-dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
-dotenv.config({ path: path.resolve(process.cwd(), '../.env') });
-dotenv.config({ path: path.resolve(process.cwd(), '.env') });
+dotenv.config({ path: path.resolve(process.cwd(), 'backend/.env.local'), override: true });
+dotenv.config({ path: path.resolve(process.cwd(), '.env.local'), override: true });
+dotenv.config({ path: path.resolve(process.cwd(), 'backend/.env'), override: true });
+dotenv.config({ path: path.resolve(process.cwd(), '.env'), override: true });
 
 const app = express();
 const PORT = process.env.PORT || 5000;

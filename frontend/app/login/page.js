@@ -27,7 +27,7 @@ function LoginForm() {
     const result = await login(email, password);
     if (result.success) {
       const user = useAuthStore.getState().user;
-      const target = redirectParam || (user?.role === 'admin' ? '/admin' : '/orders');
+      const target = redirectParam || (user?.role === 'admin' ? '/admin' : '/products');
       router.push(target);
     } else {
       setFormError(result.error);
