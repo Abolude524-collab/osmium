@@ -66,6 +66,15 @@ const checkoutLimiter = rateLimit({
   message: { success: false, message: 'Rate limit exceeded for payment checkout requests.' },
 });
 
+app.get('/', (req, res) => {
+  res.json({
+    name: 'OSMIUM API',
+    status: 'online',
+    version: '1.0.0',
+    documentation: '/api/health',
+  });
+});
+
 app.use('/api/health', healthRoutes);
 app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/products', productRoutes);
